@@ -96,6 +96,12 @@ export default function App() {
               ))}
             </div>
 
+            {/* Description */}
+<p className="text-sm text-gray-600 dark:text-gray-400 italic">
+  This is a demo version of the project, designed to showcase the capabilities of <span className="font-semibold text-indigo-600 dark:text-indigo-300">Somnia Data Streams</span> in a modular and interactive environment.
+</p>
+
+
             {/* Chart */}
             <LiveChart pairId={selectedPair} price={prices[selectedPair]?.price ?? null} />
 
