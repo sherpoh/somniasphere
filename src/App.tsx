@@ -40,7 +40,17 @@ export default function App() {
       {/* Header */}
       <header className="w-full max-w-screen-lg mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-          <h1 className="text-4xl font-extrabold tracking-tight text-indigo-700 dark:text-indigo-300">SomniaSphere</h1>
+          <div className="flex items-center space-x-4">
+  <img
+    src="/SomniaSphere_logo.png"
+    alt="SomniaSphere Logo"
+    className="h-12 w-12 object-contain"
+  />
+  <h1 className="text-4xl font-extrabold tracking-tight text-indigo-700 dark:text-indigo-300">
+    SomniaSphere
+  </h1>
+</div>
+
           <div className="flex flex-wrap gap-2">
             {['home', 'game'].map((tab) => (
               <button
