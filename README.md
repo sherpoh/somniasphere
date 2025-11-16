@@ -1,4 +1,4 @@
-#🌐 SomniaSphere
+# 🌐 SomniaSphere
 
 SomniaSphere is a hackathon project designed to demonstrate the power of Somnia Data Streams in building modular, responsive, and interactive Web3 dashboards. While the displayed pair price data is still simulated (dummy), the project's structure and architecture fully represent the workflow and potential data stream integration of the Somnia network.
 
