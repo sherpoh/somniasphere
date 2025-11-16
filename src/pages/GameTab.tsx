@@ -194,7 +194,7 @@ const fetchBalances = async (address: string) => {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
         <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2">📄 Smart Contract</h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Kontrak FlipCoin berjalan di jaringan <strong>Somnia Testnet</strong>. Kamu bisa tambahkan alamat ini ke wallet OKX atau MetaMask untuk melihat token FLIP dan interaksi.
+          The FlipCoin contract runs on the Somnia Testnet. You can add this address to your OKEx or MetaMask wallet to view FLIP tokens and interactions.
         </p>
         <div className="mt-2 flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-2 font-mono text-sm text-indigo-700 dark:text-indigo-300">
           <span>0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A</span>
@@ -210,4 +210,5 @@ const fetchBalances = async (address: string) => {
     </div>
   );
 }
+
 
