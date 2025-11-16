@@ -89,7 +89,7 @@ const fetchBalances = async (address: string) => {
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">SomniaSphere Game Arena</h2>
       <p className="text-gray-600 dark:text-gray-300">
-        Selamat datang di arena SomniaSphere! Flip koin, kumpulkan token FLIP, dan naikkan poinmu.
+        Welcome to the SomniaSphere arena! Flip coins, collect FLIP tokens, and increase your points.
       </p>
 
       {/* Wallet Connect + Balance */}
@@ -153,7 +153,13 @@ const fetchBalances = async (address: string) => {
 
       {/* Leaderboard */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-        <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2">🏆 Leaderboard</h3>
+<h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2 flex items-center gap-2">
+  🏆 Leaderboard
+  <span className="relative flex h-3 w-3">
+    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+  </span>
+</h3>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-gray-500 dark:text-gray-400">
@@ -204,3 +210,4 @@ const fetchBalances = async (address: string) => {
     </div>
   );
 }
+
