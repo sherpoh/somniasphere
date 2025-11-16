@@ -49,18 +49,27 @@ export const subscribeTokenPair = async (
     }, 1000);
     return { unsubscribe: () => clearInterval(interval) };
   } else {
-    const schemaId = await sdk.streams.computeSchemaId(tokenPairSchema);
+    if (PUBLISHER_ADDRESS instanceof Error) {
+      console.error('Invalid publisher address:', PUBLISHER_ADDRESS.message);
+      return;
+    }
 
+    const schemaId = await sdk.streams.computeSchemaId(tokenPairSchema);
     const poll = async () => {
       try {
-        const response = await sdk.streams.getAllPublisherDataForSchema(schemaId, PUBLISHER_ADDRESS);
+        const response = await sdk.streams.getAllPublisherDataForSchema(
+          schemaId,
+          PUBLISHER_ADDRESS as `0x${string}`
+        );
 
         if (response instanceof Error) {
           console.error('Stream error:', response.message);
           return;
         }
 
-        const rows: Row[] = Array.isArray(response) ? response : response?.data ?? [];
+        const rows: Row[] = Array.isArray(response)
+          ? response
+          : (response as { data: Row[] }).data ?? [];
 
         const latest = rows
           .filter((row: Row) => {
