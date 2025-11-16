@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import { FLIP_GAME_ADDRESS, FLIP_GAME_ABI } from '../constants';
+import { FLIP_GAME_ADDRESS, FLIP_GAME_ABI, FLIP_TOKEN_ADDRESS, FLIP_TOKEN_ABI } from '../constants';
 
 export default function GameTab() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [balanceSTT, setBalanceSTT] = useState<string>('0');
+  const [balanceFLIP, setBalanceFLIP] = useState<string>('0');
   const [choice, setChoice] = useState<0 | 1>(0);
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,10 +19,25 @@ export default function GameTab() {
       const signer = provider.getSigner();
       const address = await signer.getAddress();
       setWalletAddress(address);
+      fetchBalances(address);
     } catch (err) {
       console.error('Wallet connection failed:', err);
     }
   };
+
+const fetchBalances = async (address: string) => {
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const sttBalance = await provider.getBalance(address);
+    setBalanceSTT(ethers.utils.formatEther(sttBalance));
+
+    const flipToken = new ethers.Contract(FLIP_TOKEN_ADDRESS, FLIP_TOKEN_ABI, provider);
+    const flipBalance = await flipToken.balanceOf(address);
+    setBalanceFLIP(ethers.utils.formatEther(flipBalance));
+  } catch (err) {
+    console.error('Failed to fetch balances:', err);
+  }
+};
 
   const playFlip = async () => {
     try {
@@ -40,7 +57,8 @@ export default function GameTab() {
 
       setStatus('Flip complete! Check your wallet for FLIP tokens.');
       setLoading(false);
-      fetchLeaderboard(); // refresh leaderboard
+      fetchLeaderboard();
+      if (walletAddress) fetchBalances(walletAddress);
     } catch (err: any) {
       console.error(err);
       setStatus(`Error: ${err.message}`);
@@ -74,13 +92,18 @@ export default function GameTab() {
         Selamat datang di arena SomniaSphere! Flip koin, kumpulkan token FLIP, dan naikkan poinmu.
       </p>
 
-      {/* Wallet Connect */}
+      {/* Wallet Connect + Balance */}
       <div className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-xl shadow p-4">
         <div>
           {walletAddress ? (
-            <p className="text-sm text-green-600 dark:text-green-400 font-mono">
-              Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-            </p>
+            <div>
+              <p className="text-sm text-green-600 dark:text-green-400 font-mono">
+                Connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+              </p>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+                💰 STT: <span className="font-mono">{balanceSTT}</span> | ✅ FLIP: <span className="font-mono">{balanceFLIP}</span>
+              </p>
+            </div>
           ) : (
             <p className="text-sm text-gray-500 dark:text-gray-400">Wallet not connected</p>
           )}
@@ -160,6 +183,24 @@ export default function GameTab() {
           </tbody>
         </table>
       </div>
+
+      {/* Smart Contract Info */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
+        <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2">📄 Smart Contract</h3>
+        <p className="text-sm text-gray-700 dark:text-gray-300">
+          Kontrak FlipCoin berjalan di jaringan <strong>Somnia Testnet</strong>. Kamu bisa tambahkan alamat ini ke wallet OKX atau MetaMask untuk melihat token FLIP dan interaksi.
+        </p>
+        <div className="mt-2 flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-2 font-mono text-sm text-indigo-700 dark:text-indigo-300">
+          <span>0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A</span>
+          <button
+      onClick={() => navigator.clipboard.writeText('0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A')}
+      className="ml-4 px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+    >
+      Copy
+    </button>
+  </div>
+</div>
+	  
     </div>
   );
 }
