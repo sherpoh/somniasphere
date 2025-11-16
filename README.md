@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+#🌐 SomniaSphere
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SomniaSphere is a hackathon project designed to demonstrate the power of Somnia Data Streams in building modular, responsive, and interactive Web3 dashboards. While the displayed pair price data is still simulated (dummy), the project's structure and architecture fully represent the workflow and potential data stream integration of the Somnia network.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🎯 Project Goals
 
-## React Compiler
+- Display real-time blockchain data in an engaging visual format
+- Build a modular dashboard with separate panels (data vs. wallet)
+- Integrate wallet connect and direct smart contract interaction
+- Provide a clean and scalable UI/UX for further development
+- Demonstrate how the Somnia Testnet can be used for experimentation and showcase
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+### 🧩 Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Dashboard Panel: Displays dummy pair prices as a representation of the data stream
+- Wallet Panel: MetaMask connection and smart contract interaction
+- FlipCoin Game: Additional module for demonstrating contract-based rewards and leaderboards
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🛠️ Technology
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Layer | Technology |
+|---------|------------------------------------|
+| Frontend | React + TypeScript + Tailwind CSS |
+| Blockchain | Solidity + Somnia Testnet |
+| Wallet | MetaMask + ethers.js |
+| Build Tool | Vite |
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 📦 Key Features
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- 📊 Dummy price pair visualization as a simulation of Somnia Data Streams
+- 🔐 Wallet connection via MetaMask
+- 🎮 FlipCoin game as an interactive reward showcase
+- 🏆 On-chain leaderboard based on points
+- 💰 FLIP token rewards for every win
+
+---
+
+### 🧑‍💻 How to Run Locally
+
+```bash
+# Clone repo
+git clone https://github.com/sherpoh/somniasphere.git
+cd somniasphere
+
+# Install dependencies
+npm install
+
+# Run locally
+npm run dev
