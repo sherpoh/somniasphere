@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import TokenPriceTable from './components/TokenPriceTable';
 import LiveChart from './components/LiveChart';
 import GameTab from './pages/GameTab';
-import { FaGithub, FaTwitter, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import { FaGithub, FaTwitter, FaYoutube } from 'react-icons/fa';
 
 const tokenPairs = ['STT-USDT', 'STT-USDC', 'STT-ETH', 'STT-SOL'];
 
