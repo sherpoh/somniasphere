@@ -13,9 +13,8 @@ export default function GameTab() {
 
   const connectWallet = async () => {
     try {
-      const anyWallet = window.ethereum || window.okxwallet;
-if (!anyWallet) return alert('Please install a Web3 wallet such as MetaMask or OKx Wallet');
-      const provider = new ethers.providers.Web3Provider(anyWallet);
+      if (!window.ethereum) return alert('Please install MetaMask');
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send('eth_requestAccounts', []);
       const signer = provider.getSigner();
       const address = await signer.getAddress();
@@ -90,7 +89,7 @@ const fetchBalances = async (address: string) => {
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">SomniaSphere Game Arena</h2>
       <p className="text-gray-600 dark:text-gray-300">
-        Welcome to the SomniaSphere arena! Flip coins, collect FLIP tokens, and increase your points.
+        Selamat datang di arena SomniaSphere! Flip koin, kumpulkan token FLIP, dan naikkan poinmu.
       </p>
 
       {/* Wallet Connect + Balance */}
@@ -154,13 +153,7 @@ const fetchBalances = async (address: string) => {
 
       {/* Leaderboard */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
-<h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2 flex items-center gap-2">
-  🏆 Leaderboard
-  <span className="relative flex h-3 w-3">
-    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-  </span>
-</h3>
+        <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2">🏆 Leaderboard</h3>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-gray-500 dark:text-gray-400">
@@ -195,7 +188,7 @@ const fetchBalances = async (address: string) => {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
         <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2">📄 Smart Contract</h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          The FlipCoin contract runs on the Somnia Testnet. You can add this address to your OKX or MetaMask wallet to view FLIP tokens and interactions.
+          Kontrak FlipCoin berjalan di jaringan <strong>Somnia Testnet</strong>. Kamu bisa tambahkan alamat ini ke wallet OKX atau MetaMask untuk melihat token FLIP dan interaksi.
         </p>
         <div className="mt-2 flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-2 font-mono text-sm text-indigo-700 dark:text-indigo-300">
           <span>0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A</span>
@@ -211,7 +204,3 @@ const fetchBalances = async (address: string) => {
     </div>
   );
 }
-
-
-
-
