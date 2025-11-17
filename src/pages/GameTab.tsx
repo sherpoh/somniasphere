@@ -77,7 +77,9 @@ const playFlip = async () => {
         address: addr,
         points: points[i].toNumber(),
       }));
-      const sortedData = data.sort((a, b) => b.points - a.points);
+	const sortedData = data.sort(
+	  (a: { address: string; points: number }, b: { address: string; points: number }) => b.points - a.points
+	);
       setLeaderboard(sortedData);
     } catch (err) {
       console.error('Failed to take the leaderboard:', err);
