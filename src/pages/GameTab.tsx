@@ -13,8 +13,9 @@ export default function GameTab() {
 
   const connectWallet = async () => {
     try {
-      if (!window.ethereum) return alert('Please install MetaMask');
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const anyWallet = window.ethereum || window.okxwallet;
+if (!anyWallet) return alert('Please install a Web3 wallet such as MetaMask or OKx Wallet');
+      const provider = new ethers.providers.Web3Provider(anyWallet);
       await provider.send('eth_requestAccounts', []);
       const signer = provider.getSigner();
       const address = await signer.getAddress();
@@ -210,6 +211,7 @@ const fetchBalances = async (address: string) => {
     </div>
   );
 }
+
 
 
 
