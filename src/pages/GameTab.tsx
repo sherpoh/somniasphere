@@ -10,20 +10,22 @@ export default function GameTab() {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const [leaderboard, setLeaderboard] = useState<{ address: string; points: number }[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  const connectWallet = async () => {
-    try {
-      if (!window.ethereum) return alert('Please install MetaMask');
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send('eth_requestAccounts', []);
-      const signer = provider.getSigner();
-      const address = await signer.getAddress();
-      setWalletAddress(address);
-      fetchBalances(address);
-    } catch (err) {
-      console.error('Wallet connection failed:', err);
-    }
-  };
+const connectWallet = async () => {
+  try {
+    if (!window.ethereum) return alert('Please install MetaMask');
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    setWalletAddress(address);
+    fetchBalances(address);
+  } catch (err) {
+    console.error('Wallet connection failed:', err);
+  }
+};
 
 const fetchBalances = async (address: string) => {
   try {
@@ -39,32 +41,32 @@ const fetchBalances = async (address: string) => {
   }
 };
 
-  const playFlip = async () => {
-    try {
-      if (!window.ethereum) return alert('Please connect a wallet like MetaMask');
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send('eth_requestAccounts', []);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(FLIP_GAME_ADDRESS, FLIP_GAME_ABI, signer);
+const playFlip = async () => {
+  try {
+    if (!window.ethereum) return alert('Please connect a wallet like MetaMask');
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(FLIP_GAME_ADDRESS, FLIP_GAME_ABI, signer);
 
-      setLoading(true);
-      setStatus('Sending transaction...');
+    setLoading(true);
+    setStatus('Sending transaction...');
 
-      const tx = await contract.playFlip(choice, {
-        value: ethers.utils.parseEther('0.05'),
-      });
-      await tx.wait();
+    const tx = await contract.playFlip(choice, {
+      value: ethers.utils.parseEther('0.05'),
+    });
+    await tx.wait();
 
-      setStatus('Flip complete! Check your wallet for FLIP tokens.');
-      setLoading(false);
-      fetchLeaderboard();
-      if (walletAddress) fetchBalances(walletAddress);
-    } catch (err: any) {
-      console.error(err);
-      setStatus(`Error: ${err.message}`);
-      setLoading(false);
-    }
-  };
+    setStatus('Flip complete! Check your wallet for FLIP tokens.');
+    setLoading(false);
+    fetchLeaderboard();
+    if (walletAddress) fetchBalances(walletAddress);
+  } catch (err: any) {
+    console.error(err);
+    setStatus(`Error: ${err.message}`);
+    setLoading(false);
+  }
+};
 
   const fetchLeaderboard = async () => {
     try {
@@ -75,9 +77,10 @@ const fetchBalances = async (address: string) => {
         address: addr,
         points: points[i].toNumber(),
       }));
-      setLeaderboard(data);
+      const sortedData = data.sort((a, b) => b.points - a.points);
+      setLeaderboard(sortedData);
     } catch (err) {
-      console.error('Failed to fetch leaderboard:', err);
+      console.error('Failed to take the leaderboard:', err);
     }
   };
 
@@ -85,11 +88,14 @@ const fetchBalances = async (address: string) => {
     fetchLeaderboard();
   }, []);
 
-  return (
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const visibleLeaderboard = leaderboard.slice(startIndex, endIndex);
+    return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">SomniaSphere Game Arena</h2>
       <p className="text-gray-600 dark:text-gray-300">
-        Selamat datang di arena SomniaSphere! Flip koin, kumpulkan token FLIP, dan naikkan poinmu.
+        Welcome to the SomniaSphere arena! Flip coins, collect FLIP tokens, and increase your points.
       </p>
 
       {/* Wallet Connect + Balance */}
@@ -105,7 +111,7 @@ const fetchBalances = async (address: string) => {
               </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-500 dark:text-gray-400">Wallet not connected</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Wallet is not connected yet</p>
           )}
         </div>
         <button
@@ -162,45 +168,60 @@ const fetchBalances = async (address: string) => {
             </tr>
           </thead>
           <tbody>
-            {leaderboard.length === 0 ? (
+            {visibleLeaderboard.length === 0 ? (
               <tr>
                 <td colSpan={2} className="text-center py-2 text-gray-500 dark:text-gray-400">
-                  Belum ada pemain.
+                  There are no players yet.
                 </td>
               </tr>
             ) : (
-              leaderboard.map((entry, i) => (
-                <tr key={i} className="border-t border-gray-200 dark:border-gray-700">
-                  <td className="py-1 font-mono text-indigo-700 dark:text-indigo-300">
-                    {entry.address.slice(0, 10)}...
-                  </td>
-                  <td className="py-1 text-right font-bold text-gray-800 dark:text-gray-100">
-                    {entry.points}
-                  </td>
-                </tr>
-              ))
+				visibleLeaderboard.map((entry, i) => (
+				  <tr key={i} className="border-t border-gray-200 dark:border-gray-700">
+					<td className="py-1 font-mono text-indigo-700 dark:text-indigo-300">
+					  #{startIndex + i + 1} — {entry.address.slice(0, 10)}...
+					</td>
+					<td className="py-1 text-right font-bold text-gray-800 dark:text-gray-100">
+					  {entry.points}
+					</td>
+				  </tr>
+				))
             )}
           </tbody>
         </table>
+        <div className="flex justify-end mt-2 gap-2">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <button
+            onClick={() => setCurrentPage((p) => p + 1)}
+            disabled={endIndex >= leaderboard.length}
+            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {/* Smart Contract Info */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4">
         <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-300 mb-2">📄 Smart Contract</h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          Kontrak FlipCoin berjalan di jaringan <strong>Somnia Testnet</strong>. Kamu bisa tambahkan alamat ini ke wallet OKX atau MetaMask untuk melihat token FLIP dan interaksi.
+		The FlipCoin contract runs on the <strong>Somnia Testnet</strong>. You can add this address to your OKEx or MetaMask wallet to view FLIP tokens and interactions.
         </p>
         <div className="mt-2 flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-2 font-mono text-sm text-indigo-700 dark:text-indigo-300">
           <span>0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A</span>
           <button
-      onClick={() => navigator.clipboard.writeText('0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A')}
-      className="ml-4 px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
-    >
-      Copy
-    </button>
-  </div>
-</div>
-	  
+            onClick={() => navigator.clipboard.writeText('0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A')}
+            className="ml-4 px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+          >
+            Copy
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
