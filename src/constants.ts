@@ -1,7 +1,7 @@
 // constants.ts
 
 // Alamat kontrak game FlipCoin
-export const FLIP_GAME_ADDRESS = '0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A';
+export const FLIP_GAME_ADDRESS = '0xdE92045c34aB271e5e95C56CeFBC147672eB9985';
 
 // ABI kontrak game FlipCoin
 export const FLIP_GAME_ABI = [
@@ -28,7 +28,7 @@ export const FLIP_GAME_ABI = [
 ];
 
 // Alamat kontrak token FLIP (misalnya ini kontrak ERC20 terpisah)
-export const FLIP_TOKEN_ADDRESS = '0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A'; // ganti jika beda
+export const FLIP_TOKEN_ADDRESS = '0xdE92045c34aB271e5e95C56CeFBC147672eB9985'; // ganti jika beda
 
 // ABI standar ERC20 minimal untuk balance
 export const FLIP_TOKEN_ABI = [
@@ -54,3 +54,4 @@ export const FLIP_TOKEN_ABI = [
     "type": "function"
   }
 ];
+
