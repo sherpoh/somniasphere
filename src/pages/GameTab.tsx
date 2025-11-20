@@ -215,9 +215,9 @@ const playFlip = async () => {
 		The FlipCoin contract runs on the <strong>Somnia Testnet</strong>. You can add this address to your OKEx or MetaMask wallet to view FLIP tokens and interactions.
         </p>
         <div className="mt-2 flex items-center justify-between bg-gray-100 dark:bg-gray-700 rounded-lg px-4 py-2 font-mono text-sm text-indigo-700 dark:text-indigo-300">
-          <span>0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A</span>
+          <span>0xde92045c34ab271e5e95c56cefbc147672eb9985</span>
           <button
-            onClick={() => navigator.clipboard.writeText('0x340DcEaF9bd241B1f6dC6c190c7a53808bcE593A')}
+            onClick={() => navigator.clipboard.writeText('0xde92045c34ab271e5e95c56cefbc147672eb9985')}
             className="ml-4 px-2 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
           >
             Copy
@@ -227,3 +227,4 @@ const playFlip = async () => {
     </div>
   );
 }
+
