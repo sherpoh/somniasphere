@@ -28,3 +28,13 @@
   display flex;
   gap 12px;
 }
+
+.logo-title {
+  display: flex;
+  align-items: center;   /* vertikal rata tengah */
+  gap: 12px;             /* jarak antara logo dan teks */
+}
+
+.logo-title img {
+  border-radius: 50%;    /* opsional: bikin logo bulat */
+}
