@@ -69,7 +69,7 @@ Update your wallet (MetaMask) with the following:
 
 ## 👥 Credits
 - Built by Sherpoh
-- Part of Somnia Data Streams Hackathon on-  DoraHacks
+- Part of Somnia Data Streams Hackathon on [DoraHacks](https://dorahacks.io/hackathon/somnia-datastreams/detail)
 ---
 
 ## 📄 License
