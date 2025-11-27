@@ -1,22 +1,39 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import type { FeedEvent } from '../lib/types'
-import { publicClientFeedHttp, publicClientFeedWs, CONTRACT_ADDRESS, abi, EXPLORER } from '../lib/viemClientFeed'
+import {
+  publicClientFeedHttp,
+  publicClientFeedWs,
+  CONTRACT_ADDRESS,
+  abi,
+  EXPLORER,
+} from '../lib/viemClientFeed'
 
 export default function Feed() {
   const [events, setEvents] = useState<FeedEvent[]>([])
-  const [offset, setOffset] = useState<bigint>(0n)
   const [loading, setLoading] = useState(false)
-  const limit = 20n // ambil 20 post per batch
-  const loaderRef = useRef<HTMLDivElement | null>(null)
+  const [page, setPage] = useState(0)
+  const pageSize = 5
+  const maxItems = 50n // ✅ batasi 50 data terbaru
 
-  const fetchFeed = async (newOffset: bigint) => {
+  const fetchFeed = async () => {
     try {
       setLoading(true)
+
+      // ✅ ambil jumlah total post dari kontrak
+      const total = await publicClientFeedHttp.readContract({
+        address: CONTRACT_ADDRESS,
+        abi,
+        functionName: 'totalPosts', // pakai fungsi lama
+      }) as bigint
+
+      // ✅ hitung offset supaya ambil 50 terbaru
+      const start = total > maxItems ? total - maxItems : 0n
+
       const posts = await publicClientFeedHttp.readContract({
         address: CONTRACT_ADDRESS,
         abi,
         functionName: 'getPosts',
-        args: [newOffset, limit],
+        args: [start, maxItems],
       }) as any[]
 
       const data: FeedEvent[] = posts.map((p: any) => ({
@@ -27,8 +44,9 @@ export default function Feed() {
         txHash: undefined,
       }))
 
-      setEvents(prev => [...prev, ...data.reverse()])
-      setOffset(newOffset + limit)
+      // ✅ simpan 50 terbaru
+      setEvents(data.reverse())
+      setPage(0) // reset ke halaman terbaru
     } catch (err) {
       console.error('Failed to fetch feed:', err)
     } finally {
@@ -37,10 +55,9 @@ export default function Feed() {
   }
 
   useEffect(() => {
-    // load batch pertama
-    fetchFeed(0n)
+    fetchFeed()
 
-    // realtime event listener
+    // ✅ realtime listener
     const unwatch = publicClientFeedWs.watchContractEvent({
       address: CONTRACT_ADDRESS,
       abi,
@@ -54,7 +71,8 @@ export default function Feed() {
             contentHash: log.args.contentHash,
             txHash: log.transactionHash,
           }
-          setEvents(prev => [ev, ...prev])
+          setEvents(prev => [ev, ...prev].slice(0, Number(maxItems)))
+          setPage(0) // reset ke halaman terbaru
         })
       },
     })
@@ -62,19 +80,13 @@ export default function Feed() {
     return () => unwatch()
   }, [])
 
-  useEffect(() => {
-    if (!loaderRef.current) return
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !loading) {
-        fetchFeed(offset)
-      }
-    })
-    observer.observe(loaderRef.current)
-    return () => observer.disconnect()
-  }, [offset, loading])
-
   const shortenAddress = (addr: string) => `${addr.slice(0, 3)}...${addr.slice(-4)}`
   const shortenTx = (tx: string) => `${tx.slice(0, 3)}...${tx.slice(-3)}`
+
+  // ✅ pagination
+  const totalPages = Math.ceil(events.length / pageSize)
+  const startIndex = page * pageSize
+  const visible = events.slice(startIndex, startIndex + pageSize)
 
   return (
     <div className="card">
@@ -90,7 +102,7 @@ export default function Feed() {
             </tr>
           </thead>
           <tbody>
-            {events.map((e, i) => (
+            {visible.map((e, i) => (
               <tr key={i}>
                 <td>
                   {new Date(Number(e.timestamp) * 1000).toLocaleString('en-US', {
@@ -114,7 +126,7 @@ export default function Feed() {
                 </td>
               </tr>
             ))}
-            {events.length === 0 && (
+            {visible.length === 0 && (
               <tr>
                 <td colSpan={4} style={{ textAlign: 'center', opacity: 0.7 }}>
                   Waiting for events...
@@ -123,8 +135,33 @@ export default function Feed() {
             )}
           </tbody>
         </table>
-        <div ref={loaderRef} style={{ textAlign: 'center', padding: '10px' }}>
-          {loading ? 'Loading more...' : 'Scroll to load more'}
+
+        {/* ✅ Pagination controls + indikator */}
+        <div className="flex justify-between items-center mt-2">
+          <span>Page {page + 1} of {totalPages}</span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPage(p => Math.max(p - 1, 0))}
+              disabled={page === 0}
+              className="btn small"
+            >
+              Back
+            </button>
+            <button
+              onClick={() => setPage(p => (p + 1 < totalPages ? p + 1 : p))}
+              disabled={page + 1 >= totalPages}
+              className="btn small"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+
+        {/* ✅ Refresh button */}
+        <div className="flex justify-center mt-2">
+          <button onClick={fetchFeed} className="btn small gold">
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
         </div>
       </div>
     </div>
