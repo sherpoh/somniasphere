@@ -49,7 +49,7 @@ export default function Header() {
           </a>
           <a
             className="btn gold-outline"
-            href="https://youtube.com"
+            href="https://youtu.be/e3I3qyCy1Xg"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -59,4 +59,5 @@ export default function Header() {
       </div>
     </header>
   )
+
 }
