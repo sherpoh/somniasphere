@@ -6,7 +6,7 @@
 
 ## 🎬 SomniaSphere Demo
 
-[▶ Watch the demo video](./demo.mp4)
+[▶ Watch the demo video](https://www.youtube.com/watch?v=e3I3qyCy1Xg)
 
 ---
 
@@ -76,5 +76,6 @@ Update your wallet (MetaMask) with the following:
 ## 📄 License
 MIT License
 ---
+
 
 
